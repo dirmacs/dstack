@@ -1,8 +1,11 @@
----
-title: The dstack Story
-slug: story
-date: 2026-04-08
----
++++
+title = "The dstack Story"
+date = 2026-04-08
+[extra]
++++
+
+# The dstack Story
+
 > How a small team's worst weeks became their best tool.
 
 ## The Problem We Lived

@@ -149,7 +149,7 @@ dstack/
 │   ├── commands/          # 3 command definitions
 │   └── CLAUDE.md          # Bootstrap instructions
 ├── overlays/              # Private config examples
-└── site/                  # Documentation (marmite SSG)
+└── site/                  # Documentation (Zola)
 ```
 
 ## Philosophy

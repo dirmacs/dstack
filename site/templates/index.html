@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}dstack — Development Stack{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-badge">v0.2</div>
+  <h1><span class="logo-d">d</span>stack</h1>
+  <p class="tagline">Development stack for AI-assisted multi-repo work</p>
+  <p class="subtitle">Persistent memory · Quality gates · VPS deployment · Cross-repo sync</p>
+  <div class="hero-actions">
+    <a href="https://github.com/dirmacs/dstack" class="btn btn-primary">GitHub</a>
+    <a href="https://crates.io/crates/dstack-cli" class="btn btn-secondary">cargo install dstack-cli</a>
+  </div>
+</section>
+
+<section class="features">
+  <div class="feature-grid">
+    <div class="feature">
+      <div class="feature-icon">🧠</div>
+      <h3>Persistent Memory</h3>
+      <p>Context survives sessions. Save learnings to File or Eruka backends. Never rediscover the same thing twice.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔄</div>
+      <h3>Multi-Repo Sync</h3>
+      <p>Track 12+ repos at once. See ahead/behind counts, dirty files, branch alignment — one command.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🚀</div>
+      <h3>VPS Deploy</h3>
+      <p>Build → restart → smoke test. Disk checks before build. Binary backup for rollback. Zero-downtime deploys.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🛡️</div>
+      <h3>Quality Gates</h3>
+      <p>5-question pre-commit checklist. Born from a client meeting that almost didn't happen. Thoroughness > speed.</p>
+    </div>
+  </div>
+</section>
+
+<section class="install">
+  <h2>Install</h2>
+  <pre><code>cargo install dstack-cli</code></pre>
+  <p>Or from source:</p>
+  <pre><code>git clone https://github.com/dirmacs/dstack && cd dstack
+cargo install --path crates/dstack-cli</code></pre>
+</section>
+
+<section class="commands">
+  <h2>Commands</h2>
+  <div class="command-grid">
+    <div class="command">
+      <code>dstack memory save/load/query/export</code>
+      <span>Persistent context across sessions</span>
+    </div>
+    <div class="command">
+      <code>dstack sync --status</code>
+      <span>Git status across all tracked repos</span>
+    </div>
+    <div class="command">
+      <code>dstack deploy &lt;service&gt;</code>
+      <span>Build → restart → smoke test</span>
+    </div>
+    <div class="command">
+      <code>dstack deploy &lt;service&gt; --rollback</code>
+      <span>Rollback to previous binary</span>
+    </div>
+    <div class="command">
+      <code>dstack audit --pre-commit</code>
+      <span>5-question quality gate</span>
+    </div>
+    <div class="command">
+      <code>dstack audit --stale</code>
+      <span>Find stale companion docs</span>
+    </div>
+  </div>
+</section>
+
+<section class="plugin">
+  <h2>Claude Code Plugin</h2>
+  <p>6 skills, 3 hooks, 3 commands. Works alongside <a href="https://github.com/obra/superpowers">superpowers</a> and GSD — no conflicts.</p>
+  <div class="plugin-grid">
+    <div class="plugin-item"><strong>eruka-memory</strong> — When/how to persist learnings</div>
+    <div class="plugin-item"><strong>multi-repo-ops</strong> — Cross-repo dependency awareness</div>
+    <div class="plugin-item"><strong>vps-deploy</strong> — Deployment workflow</div>
+    <div class="plugin-item"><strong>companion-docs</strong> — Track reality vs plan</div>
+    <div class="plugin-item"><strong>quality-gates</strong> — Pre-commit checklist</div>
+    <div class="plugin-item"><strong>using-dstack</strong> — Session orientation</div>
+  </div>
+</section>
+
+{{ section.content | safe }}
+{% endblock %}
