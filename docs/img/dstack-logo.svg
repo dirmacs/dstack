@@ -1,47 +1,121 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#1a1a2e"/>
       <stop offset="100%" stop-color="#0d1117"/>
     </linearGradient>
-    <linearGradient id="layer1" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#58a6ff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#1f6feb" stop-opacity="0.04"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#3fb950"/>
       <stop offset="100%" stop-color="#238636"/>
     </linearGradient>
-    <linearGradient id="layer2" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="blueGrad" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#58a6ff"/>
       <stop offset="100%" stop-color="#1f6feb"/>
     </linearGradient>
-    <linearGradient id="layer3" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="orangeGrad" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#f97316"/>
       <stop offset="100%" stop-color="#ea580c"/>
     </linearGradient>
+    <linearGradient id="traceGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#58a6ff" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#58a6ff" stop-opacity="0.05"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softglow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
 
   <!-- Background -->
-  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="64" fill="url(#bgGrad)"/>
 
-  <!-- Stack layers (isometric-ish parallelograms) -->
-  <!-- Bottom layer: Memory (green) -->
-  <path d="M32 78 L64 92 L96 78 L64 64 Z" fill="url(#layer1)" opacity="0.9"/>
-  <path d="M32 78 L32 72 L64 58 L64 64 Z" fill="#238636" opacity="0.5"/>
-  <path d="M64 64 L64 58 L96 72 L96 78 Z" fill="#3fb950" opacity="0.3"/>
+  <!-- Ghost shield (behind everything — the "armor" metaphor) -->
+  <path d="M256 68 L368 118 L368 240 Q368 330 256 370 Q144 330 144 240 L144 118 Z"
+        fill="url(#shieldGrad)" stroke="#58a6ff" stroke-width="1" stroke-opacity="0.15"/>
 
-  <!-- Middle layer: CLI (blue) -->
-  <path d="M32 64 L64 78 L96 64 L64 50 Z" fill="url(#layer2)" opacity="0.9"/>
-  <path d="M32 64 L32 58 L64 44 L64 50 Z" fill="#1f6feb" opacity="0.5"/>
-  <path d="M64 50 L64 44 L96 58 L96 64 Z" fill="#58a6ff" opacity="0.3"/>
+  <!-- Memory grid (subtle background texture — persistence) -->
+  <g stroke="#58a6ff" stroke-width="0.5" stroke-opacity="0.06">
+    <line x1="176" y1="100" x2="176" y2="360"/>
+    <line x1="216" y1="100" x2="216" y2="360"/>
+    <line x1="256" y1="100" x2="256" y2="360"/>
+    <line x1="296" y1="100" x2="296" y2="360"/>
+    <line x1="336" y1="100" x2="336" y2="360"/>
+    <line x1="144" y1="150" x2="368" y2="150"/>
+    <line x1="144" y1="200" x2="368" y2="200"/>
+    <line x1="144" y1="250" x2="368" y2="250"/>
+    <line x1="144" y1="300" x2="368" y2="300"/>
+  </g>
 
-  <!-- Top layer: Skills (orange) -->
-  <path d="M32 50 L64 64 L96 50 L64 36 Z" fill="url(#layer3)" opacity="0.9"/>
-  <path d="M32 50 L32 44 L64 30 L64 36 Z" fill="#ea580c" opacity="0.5"/>
-  <path d="M64 36 L64 30 L96 44 L96 50 Z" fill="#f97316" opacity="0.3"/>
+  <!-- Connection traces (multi-repo sync — circuit board aesthetic) -->
+  <g stroke="url(#traceGrad)" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M160 310 L160 280 Q160 270 170 270 L210 270"/>
+    <path d="M352 310 L352 280 Q352 270 342 270 L302 270"/>
+    <path d="M196 330 L196 295 Q196 285 206 285 L250 285"/>
+    <path d="M316 330 L316 295 Q316 285 306 285 L262 285"/>
+    <path d="M256 340 L256 295"/>
+  </g>
 
-  <!-- Shield/checkmark glow (quality gate) -->
-  <polyline points="57,46 62,52 73,40" stroke="#3fb950" stroke-width="3"
-            stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+  <!-- Repo nodes (bottom — connected repos) -->
+  <circle cx="160" cy="318" r="6" fill="#58a6ff" opacity="0.7"/>
+  <circle cx="196" cy="338" r="5" fill="#3fb950" opacity="0.6"/>
+  <circle cx="256" cy="348" r="7" fill="#58a6ff" opacity="0.8" filter="url(#glow)"/>
+  <circle cx="316" cy="338" r="5" fill="#3fb950" opacity="0.6"/>
+  <circle cx="352" cy="318" r="6" fill="#58a6ff" opacity="0.7"/>
 
-  <!-- Subtle pulse rings around checkmark -->
-  <circle cx="64" cy="46" r="12" stroke="#3fb950" stroke-width="1" opacity="0.2"/>
-  <circle cx="64" cy="46" r="18" stroke="#3fb950" stroke-width="0.5" opacity="0.1"/>
+  <!-- === STACK LAYERS (the core visual) === -->
+
+  <!-- Layer 1: MEMORY (bottom — green) -->
+  <g opacity="0.95">
+    <path d="M148 252 L256 308 L364 252 L256 196 Z" fill="url(#greenGrad)"/>
+    <path d="M148 252 L148 236 L256 180 L256 196 Z" fill="#238636" opacity="0.6"/>
+    <path d="M256 196 L256 180 L364 236 L364 252 Z" fill="#3fb950" opacity="0.35"/>
+  </g>
+
+  <!-- Layer 2: CLI (middle — blue) -->
+  <g opacity="0.95">
+    <path d="M148 216 L256 272 L364 216 L256 160 Z" fill="url(#blueGrad)"/>
+    <path d="M148 216 L148 200 L256 144 L256 160 Z" fill="#1f6feb" opacity="0.6"/>
+    <path d="M256 160 L256 144 L364 200 L364 216 Z" fill="#58a6ff" opacity="0.35"/>
+  </g>
+
+  <!-- Layer 3: SKILLS (top — orange) -->
+  <g opacity="0.95">
+    <path d="M148 180 L256 236 L364 180 L256 124 Z" fill="url(#orangeGrad)"/>
+    <path d="M148 180 L148 164 L256 108 L256 124 Z" fill="#ea580c" opacity="0.6"/>
+    <path d="M256 124 L256 108 L364 164 L364 180 Z" fill="#f97316" opacity="0.35"/>
+  </g>
+
+  <!-- Quality checkmark (centered on stack, glowing) -->
+  <g filter="url(#glow)">
+    <polyline points="236,168 252,186 280,150" fill="none" stroke="#3fb950"
+              stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Checkmark pulse rings -->
+  <circle cx="256" cy="168" r="28" stroke="#3fb950" stroke-width="1.5" fill="none" opacity="0.2"/>
+  <circle cx="256" cy="168" r="42" stroke="#3fb950" stroke-width="0.8" fill="none" opacity="0.08"/>
+
+  <!-- Corner accents (subtle tech feel) -->
+  <g stroke="#58a6ff" stroke-width="1.5" stroke-opacity="0.2" stroke-linecap="round">
+    <polyline points="88,88 88,108 108,108" fill="none"/>
+    <polyline points="424,88 424,108 404,108" fill="none"/>
+    <polyline points="88,424 88,404 108,404" fill="none"/>
+    <polyline points="424,424 424,404 404,404" fill="none"/>
+  </g>
+
+  <!-- DSTACK text -->
+  <text x="256" y="410" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif"
+        font-size="44" font-weight="800" fill="#c9d1d9" letter-spacing="10">DSTACK</text>
+
+  <!-- Subtitle -->
+  <text x="256" y="444" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif"
+        font-size="11" font-weight="500" fill="#8b949e" letter-spacing="6">DEVELOPMENT STACK</text>
 </svg>
