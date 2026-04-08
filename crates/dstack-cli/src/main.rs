@@ -81,10 +81,12 @@ enum MemoryAction {
 async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
     let cfg = config::Config::load()?;
+    cfg.load_env();
 
     match cli.command {
         Commands::Config => {
             println!("Config path: {}", config::config_path().display());
+            println!("Env file: {}", cfg.env_file);
             println!("Memory backend: {}", cfg.memory.backend);
             println!("Memory path: {}", cfg.memory_path().display());
             println!("Tracked repos: {:?}", cfg.repos.tracked);
