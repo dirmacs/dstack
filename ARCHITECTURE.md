@@ -85,17 +85,33 @@ dstack/
     └── TASK.xml                 # GSD-style atomic task template
 ```
 
-## Skill Design Principles
+## Design Philosophy
 
-1. **Auto-activate, don't require invocation** — Skills trigger based on context, like superpowers. When touching Rust code → `impl-test-pairs` activates. When touching `/opt/ehb` → `multi-repo-ops` activates.
+Born from two weeks of real pain. Every principle exists because ignoring it cost us something.
 
-2. **Eruka is the memory layer** — No SQLite, no flat files for persistent state. Everything goes through Eruka's REST API. Session learnings, corrections, patterns → Eruka fields.
+### Core Beliefs
 
-3. **Lightweight by default, ceremony on demand** — Small fixes get `impl-test-pairs` only. New features get `spec-first` → `plan` → `wave-execution`. Architecture changes get the full stack including review gates.
+1. **Humans verify, AI executes.** The moment you trust AI output over human intuition is the moment you accumulate invisible debt. dstack enforces verification, not just generation.
 
-4. **Production-aware** — Every skill knows about the VPS, the service names, the ports, the databases. `deploy` isn't abstract — it's `cargo build --release && sudo systemctl restart ehb-api`.
+2. **Memory is a team resource, not a personal diary.** Context divergence between team members' AI instances caused more damage than any bug. One person's learning must benefit everyone's next session. This is why the memory layer exists and why it's shareable.
 
-5. **Compound, don't accumulate** — Learnings from each session feed back into Eruka. Next session starts with accumulated context. This is Pro Workflow's best idea, but with Eruka instead of SQLite.
+3. **Friction kills teams before bugs do.** Process friction + unreliable AI + communication gaps compound exponentially. Every feature in dstack is evaluated against: does this reduce friction or add it?
+
+4. **Build tools that build tools.** The race isn't what you build — it's what you can build that builds everything else. dstack is an aircraft carrier, not a speedboat. But you don't launch an aircraft carrier to cross a river.
+
+5. **Ship the unique value.** Don't reimplement what other frameworks do well. TDD? Superpowers. Project structure? GSD. Memory, multi-repo, deploy, quality gates? That's dstack.
+
+### Skill Design Principles
+
+1. **Auto-activate, don't require invocation** — Skills trigger based on context, like superpowers. When touching Rust code → `impl-test-pairs` activates. When touching multiple repos → `multi-repo-ops` activates.
+
+2. **Pluggable memory, not vendor lock-in** — MemoryProvider trait with FileProvider (default) and ErukaProvider (power-up). Others can add Redis, SQLite, whatever. Memory works everywhere; Eruka makes it exceptional.
+
+3. **Lightweight by default, ceremony on demand** — Bug fix? Tests + commit. New feature? Spec + plan + execution. Architecture change? Full review cycle. The ceremony matches the task.
+
+4. **Production-aware, not production-abstract** — Every skill knows about real infrastructure. `deploy` isn't generic advice — it's `cargo build --release && sudo systemctl restart && curl health endpoint`. Because abstract deployment advice is useless at 3 AM.
+
+5. **Compound, don't accumulate** — Learnings from each session feed back into memory. Next session starts with accumulated context. Corrections compound; mistakes don't repeat.
 
 ## Hook System
 
