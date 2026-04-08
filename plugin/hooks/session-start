@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# dstack session-start hook
+# Loads project memory based on current working directory
+
+set -euo pipefail
+
+if ! command -v dstack &>/dev/null; then
+  exit 0  # dstack not installed, skip silently
+fi
+
+# Detect project from cwd
+PROJECT=$(basename "$(pwd)")
+
+# Load memory for this project
+OUTPUT=$(dstack memory load --project "$PROJECT" 2>&1) || true
+
+if [ -n "$OUTPUT" ]; then
+  echo "$OUTPUT"
+fi

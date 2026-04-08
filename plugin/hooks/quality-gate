@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# dstack quality-gate hook
+# Runs pre-commit quality checklist
+
+set -euo pipefail
+
+if ! command -v dstack &>/dev/null; then
+  exit 0  # dstack not installed, skip silently
+fi
+
+dstack audit --pre-commit
