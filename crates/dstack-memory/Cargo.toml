@@ -1,0 +1,22 @@
+[package]
+name = "dstack-memory"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+async-trait = "0.1"
+chrono = { version = "0.4", features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", features = ["json"], optional = true }
+thiserror = "2"
+tokio = { version = "1", features = ["fs"] }
+
+[features]
+default = ["file"]
+file = []
+eruka = ["reqwest"]
+
+[dev-dependencies]
+tempfile = "3"
+tokio = { version = "1", features = ["full"] }

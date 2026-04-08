@@ -1,0 +1,17 @@
+[package]
+name = "dstack-cli"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "dstack"
+path = "src/main.rs"
+
+[dependencies]
+dstack-memory = { path = "../dstack-memory", features = ["file", "eruka"] }
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
+tokio = { version = "1", features = ["full"] }
+dirs = "6"
+anyhow = "1"
