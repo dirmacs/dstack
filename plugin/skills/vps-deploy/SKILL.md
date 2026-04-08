@@ -11,7 +11,7 @@ Deploy services via `dstack deploy`. Each target defines a build command, system
 
 ```bash
 # Single service
-dstack deploy ares
+dstack deploy my-api
 
 # All configured services
 dstack deploy --all
@@ -47,14 +47,14 @@ If a deploy goes wrong:
 Deploy targets are defined in `~/.config/dstack/config.toml`:
 
 ```toml
-[deploy.ares]
-build = "cd /opt/ares && cargo build --release"
-service = "ares"
+[deploy.my-api]
+build = "cd /opt/my-api && cargo build --release"
+service = "my-api"
 smoke = "curl -sf http://localhost:3000/health"
 
-[deploy.eruka]
-build = "cd /opt/eruka && cargo build --release"
-service = "eruka"
+[deploy.my-worker]
+build = "cd /opt/my-worker && cargo build --release"
+service = "my-worker"
 smoke = "curl -sf http://localhost:8081/health"
 ```
 

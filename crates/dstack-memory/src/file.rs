@@ -7,7 +7,7 @@ use crate::{Field, MemoryProvider, Result};
 /// JSON file-based memory backend.
 ///
 /// Each field is stored as a separate `.json` file. The field path maps directly
-/// to the filesystem: `"projects/ehb/learnings/tags"` becomes `{root}/projects/ehb/learnings/tags.json`.
+/// to the filesystem: `"projects/myapp/learnings/auth"` becomes `{root}/projects/myapp/learnings/auth.json`.
 pub struct FileProvider {
     root: PathBuf,
 }

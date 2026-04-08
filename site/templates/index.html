@@ -4,9 +4,10 @@
 
 {% block content %}
 <section class="hero">
-  <img src="{{ get_url(path='dstack-logo.svg') }}" alt="dstack" class="hero-logo" width="128" height="128">
-  <div class="hero-badge">v0.2</div>
-  <h1><span class="logo-d">d</span>stack</h1>
+  <div class="hero-logo-wrap">
+    <img src="{{ get_url(path='dstack-logo.svg') }}" alt="dstack" class="hero-logo" width="128" height="128">
+  </div>
+  <h1><span class="logo-d">d</span>stack <span class="hero-badge">v0.2</span></h1>
   <p class="tagline">Development stack for AI-assisted multi-repo work</p>
   <p class="subtitle">Persistent memory · Quality gates · VPS deployment · Cross-repo sync</p>
   <div class="hero-actions">

@@ -12,7 +12,7 @@ Deploy a service using the dstack deployment pipeline.
 ## Usage
 
 ```
-/deploy ares        # Deploy a specific service
+/deploy my-api      # Deploy a specific service
 /deploy all         # Deploy all configured services
 /deploy             # Show available deploy targets
 ```

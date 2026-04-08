@@ -75,21 +75,27 @@ main {
   text-align: center;
   padding: 4rem 0 3rem;
   position: relative;
-  .hero-logo {
+  .hero-logo-wrap {
+    display: block;
     margin-bottom: 1.5rem;
+  }
+  .hero-logo {
+    display: block;
+    margin: 0 auto;
     filter: drop-shadow(0 0 24px rgba($primary, 0.15));
   }
   .hero-badge {
     display: inline-block;
     background: rgba($primary, 0.15);
     color: $primary;
-    font-size: 0.75rem;
+    font-size: 0.5em;
     font-weight: 700;
-    padding: 0.25rem 0.75rem;
+    padding: 0.15rem 0.5rem;
     border-radius: 999px;
     border: 1px solid rgba($primary, 0.3);
-    margin-bottom: 1rem;
     letter-spacing: 0.5px;
+    vertical-align: super;
+    margin-left: 0.25rem;
   }
   h1 {
     font-size: 3.5rem;
