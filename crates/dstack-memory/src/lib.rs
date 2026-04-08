@@ -69,8 +69,8 @@ mod tests {
     #[test]
     fn field_serialization_roundtrip() {
         let field = Field {
-            path: "projects/ehb/learnings/tag-pipeline".into(),
-            value: "All agent prompts need ---TAGS--- instruction".into(),
+            path: "projects/myapp/learnings/auth-fix".into(),
+            value: "JWT validation needs rust_crypto feature flag".into(),
             confidence: 0.95,
             source: "user_correction".into(),
             updated_at: chrono::Utc::now(),

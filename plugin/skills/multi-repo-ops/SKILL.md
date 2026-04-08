@@ -32,14 +32,14 @@ Only syncs repos with clean working trees. Dirty repos are skipped with a warnin
 When changes span repos, build in dependency order:
 
 1. **Libraries first** — shared crates, core types
-2. **Servers next** — ares, eruka, doltares
+2. **Servers next** — API servers, workers, daemons
 3. **Clients last** — CLI tools, frontends, config
 
-Example DIRMACS order:
+Example order:
 ```
-dirmacs-core → ares → ares-dirmacs → ehb
-eruka → eruka-mcp
-pawan (standalone)
+core-lib → api-server → client-app
+memory-engine → mcp-bridge
+cli-tool (standalone)
 ```
 
 ## Cross-Repo Checklist
@@ -54,7 +54,7 @@ Before committing cross-repo changes:
 
 ## Branch Alignment
 
-Some projects use `holy` as the working branch (ehb, things-to-do). Others use `main`. Check `dstack sync --status` to see which branch each repo is on. Don't mix — if repo A is on `holy`, keep it on `holy`.
+Some projects use feature branches or non-default branches. Check `dstack sync --status` to see which branch each repo is on. Don't mix — if repo A is on a feature branch, keep it there.
 
 ## Configuration
 
@@ -62,5 +62,5 @@ Tracked repos are set in `~/.config/dstack/config.toml`:
 
 ```toml
 [repos]
-tracked = ["/opt/ares", "/opt/eruka", "/opt/ehb"]
+tracked = ["my-api", "my-lib", "my-frontend"]
 ```

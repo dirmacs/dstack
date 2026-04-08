@@ -43,7 +43,7 @@ cargo install --path crates/dstack-cli
 backend = "file"  # "file" (default) or "eruka"
 
 [repos]
-tracked = ["ares", "eruka", "ehb", "pawan"]
+tracked = ["ares", "pawan", "my-frontend"]
 
 [deploy.ares]
 build = "cd /opt/ares && cargo build --release"

@@ -28,9 +28,9 @@ Save when you discover something that:
 
 ```bash
 # Key format: category/project/topic
-dstack memory save "learnings/ares/jwt-fix" "jsonwebtoken needs rust_crypto feature, not default"
-dstack memory save "decisions/eruka/field-rollback" "Fields are never deleted, only set to confidence=0"
-dstack memory save "gotchas/deploy/ares-build" "Must use lto=thin, full LTO OOMs on 2GB VPS"
+dstack memory save "learnings/my-api/jwt-fix" "jsonwebtoken needs rust_crypto feature, not default"
+dstack memory save "decisions/my-api/field-rollback" "Fields are never deleted, only set to confidence=0"
+dstack memory save "gotchas/deploy/my-api-build" "Must use lto=thin, full LTO OOMs on 2GB VPS"
 ```
 
 ## Memory Hygiene
