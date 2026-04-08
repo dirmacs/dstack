@@ -1,4 +1,7 @@
+mod cmd_audit;
+mod cmd_deploy;
 mod cmd_memory;
+mod cmd_sync;
 mod config;
 
 use clap::{Parser, Subcommand};
@@ -18,6 +21,33 @@ enum Commands {
     Memory {
         #[command(subcommand)]
         action: MemoryAction,
+    },
+    /// Deploy a service (build + restart + smoke test)
+    Deploy {
+        /// Service name from config, or --all
+        #[arg(default_value = "")]
+        service: String,
+        /// Deploy all configured services
+        #[arg(long)]
+        all: bool,
+    },
+    /// Git sync across tracked repos
+    Sync {
+        /// Show status without syncing
+        #[arg(long)]
+        status: bool,
+        /// Dry run (don't push)
+        #[arg(long)]
+        dry_run: bool,
+    },
+    /// Quality audit
+    Audit {
+        /// Run pre-commit quality gate
+        #[arg(long)]
+        pre_commit: bool,
+        /// Scan for stale companion docs
+        #[arg(long)]
+        stale: bool,
     },
 }
 
@@ -71,6 +101,32 @@ async fn main() -> anyhow::Result<()> {
                 cmd_memory::export(&cfg).await?;
             }
         },
+        Commands::Deploy { service, all } => {
+            if all {
+                cmd_deploy::deploy_all(&cfg)?;
+            } else if service.is_empty() {
+                anyhow::bail!("Specify a service name or use --all");
+            } else {
+                cmd_deploy::deploy(&cfg, &service)?;
+            }
+        }
+        Commands::Sync { status, dry_run } => {
+            if status {
+                cmd_sync::status(&cfg)?;
+            } else {
+                cmd_sync::sync(&cfg, dry_run)?;
+            }
+        }
+        Commands::Audit { pre_commit, stale } => {
+            if pre_commit {
+                cmd_audit::pre_commit()?;
+            } else if stale {
+                cmd_audit::stale(&cfg)?;
+            } else {
+                // Default: show quality gate
+                cmd_audit::pre_commit()?;
+            }
+        }
     }
 
     Ok(())
