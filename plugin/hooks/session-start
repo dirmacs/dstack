@@ -1,19 +1,50 @@
 #!/usr/bin/env bash
 # dstack session-start hook
-# Loads project memory based on current working directory
+# Loads project memory and injects context into the session
 
 set -euo pipefail
 
-if ! command -v dstack &>/dev/null; then
-  exit 0  # dstack not installed, skip silently
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+# Build context string
+context=""
+
+# Load memory if dstack is installed
+if command -v dstack &>/dev/null; then
+  PROJECT=$(basename "$(pwd)")
+  MEMORY_OUTPUT=$(dstack memory load --project "$PROJECT" 2>/dev/null) || true
+  if [ -n "$MEMORY_OUTPUT" ]; then
+    context="dstack memory loaded for project '${PROJECT}':\n${MEMORY_OUTPUT}"
+  fi
+
+  SYNC_OUTPUT=$(dstack sync --status 2>/dev/null | head -20) || true
+  if [ -n "$SYNC_OUTPUT" ]; then
+    context="${context}\n\nRepo status:\n${SYNC_OUTPUT}"
+  fi
 fi
 
-# Detect project from cwd
-PROJECT=$(basename "$(pwd)")
+# Read using-dstack skill
+SKILL_CONTENT=$(cat "${PLUGIN_ROOT}/skills/using-dstack/SKILL.md" 2>/dev/null || echo "")
 
-# Load memory for this project
-OUTPUT=$(dstack memory load --project "$PROJECT" 2>&1) || true
-
-if [ -n "$OUTPUT" ]; then
-  echo "$OUTPUT"
+if [ -n "$SKILL_CONTENT" ]; then
+  context="${context}\n\n${SKILL_CONTENT}"
 fi
+
+# Escape for JSON
+escape_for_json() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  s="${s//$'\n'/\\n}"
+  s="${s//$'\r'/\\r}"
+  s="${s//$'\t'/\\t}"
+  printf '%s' "$s"
+}
+
+escaped=$(escape_for_json "$context")
+
+# Output in Claude Code format
+printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped"
+
+exit 0

@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
-# dstack context-monitor hook (async)
-# Tracks tool call count as proxy for context usage
-# Warns when context is getting heavy
+# dstack context-monitor hook (PostToolUse, async)
+# Tracks tool call count, warns at thresholds
 
 set -euo pipefail
 
-COUNTER_FILE="${TMPDIR:-/tmp}/dstack-context-count"
+COUNTER_FILE="${TMPDIR:-/tmp}/dstack-context-count-$$"
 
-# Increment counter
 COUNT=0
 if [ -f "$COUNTER_FILE" ]; then
   COUNT=$(cat "$COUNTER_FILE")
@@ -15,9 +13,26 @@ fi
 COUNT=$((COUNT + 1))
 echo "$COUNT" > "$COUNTER_FILE"
 
-# Warn at thresholds
+# Only emit context at warning thresholds
+MSG=""
 if [ "$COUNT" -eq 50 ]; then
-  echo "dstack: 50 tool calls in this session. Consider saving important findings with 'dstack memory save'."
+  MSG="dstack: 50 tool calls this session. Consider saving important findings with 'dstack memory save'."
 elif [ "$COUNT" -eq 100 ]; then
-  echo "dstack: 100 tool calls. Context is getting heavy. Save key learnings before they're lost to compaction."
+  MSG="dstack: 100 tool calls. Context is heavy. Save key learnings before compaction."
 fi
+
+if [ -n "$MSG" ]; then
+  escape_for_json() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+  }
+  escaped=$(escape_for_json "$MSG")
+  printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "PostToolUse",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped"
+fi
+
+exit 0
