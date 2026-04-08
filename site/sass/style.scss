@@ -75,6 +75,10 @@ main {
   text-align: center;
   padding: 4rem 0 3rem;
   position: relative;
+  .hero-logo {
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 24px rgba($primary, 0.15));
+  }
   .hero-badge {
     display: inline-block;
     background: rgba($primary, 0.15);
