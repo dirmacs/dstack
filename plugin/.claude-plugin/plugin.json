@@ -1,0 +1,10 @@
+{
+  "name": "dstack",
+  "description": "Development stack for AI-assisted multi-repo work. Persistent memory (File + Eruka backends), cross-repo sync, VPS deployment with rollback, quality gates. Born from production pain across 15+ repos.",
+  "author": {
+    "name": "DIRMACS",
+    "email": "contact@dirmacs.com"
+  },
+  "version": "0.2.0",
+  "license": "MIT"
+}
