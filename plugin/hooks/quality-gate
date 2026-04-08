@@ -1,11 +1,30 @@
 #!/usr/bin/env bash
-# dstack quality-gate hook
-# Runs pre-commit quality checklist
+# dstack quality-gate hook (PreToolUse on Bash)
+# Injects quality gate reminder when git commit is detected
 
 set -euo pipefail
 
-if ! command -v dstack &>/dev/null; then
-  exit 0  # dstack not installed, skip silently
+TOOL_INPUT="${1:-}"
+
+# Only fire on git commit commands
+if ! echo "$TOOL_INPUT" | grep -q "git commit"; then
+  exit 0
 fi
 
-dstack audit --pre-commit
+GATE_MSG="dstack quality gate — before committing, confirm:\\n1. Negative tests written?\\n2. Live system verified?\\n3. Companion doc updated with details?\\n4. Tests fail without this change?\\n5. Truly done, not just showing progress?"
+
+escape_for_json() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  s="${s//$'\n'/\\n}"
+  s="${s//$'\r'/\\r}"
+  s="${s//$'\t'/\\t}"
+  printf '%s' "$s"
+}
+
+escaped=$(escape_for_json "$GATE_MSG")
+
+printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "PreToolUse",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped"
+
+exit 0

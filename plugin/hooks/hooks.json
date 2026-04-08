@@ -1,26 +1,40 @@
-[
-  {
-    "name": "dstack-session-start",
-    "description": "Load project memory on session start",
-    "event": "on_session_start",
-    "script": "plugin/hooks/session-start",
-    "timeout": 10000
-  },
-  {
-    "name": "dstack-quality-gate",
-    "description": "Run quality gate before commits",
-    "event": "on_tool_call",
-    "tool_name": "Bash",
-    "pattern": "git commit",
-    "script": "plugin/hooks/quality-gate",
-    "timeout": 5000
-  },
-  {
-    "name": "dstack-context-monitor",
-    "description": "Track context usage and suggest saving findings",
-    "event": "on_tool_result",
-    "script": "plugin/hooks/context-monitor",
-    "timeout": 3000,
-    "async": true
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/session-start\"",
+            "async": false
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/quality-gate\" \"$TOOL_INPUT\"",
+            "async": false
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/context-monitor\"",
+            "async": true
+          }
+        ]
+      }
+    ]
   }
-]
+}
