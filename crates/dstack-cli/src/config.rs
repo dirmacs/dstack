@@ -5,6 +5,10 @@ use std::path::PathBuf;
 /// Top-level dstack configuration.
 #[derive(Debug, Deserialize)]
 pub struct Config {
+    /// Path to .env file for secrets (supports ~ expansion).
+    /// Loaded before any command runs. Gitignored by default.
+    #[serde(default = "default_env_file")]
+    pub env_file: String,
     #[serde(default)]
     pub memory: MemoryConfig,
     #[serde(default)]
@@ -73,6 +77,10 @@ pub struct GitConfig {
 
 // --- Defaults ---
 
+fn default_env_file() -> String {
+    "~/.config/dstack/.env".to_string()
+}
+
 fn default_backend() -> String {
     "file".to_string()
 }
@@ -129,6 +137,7 @@ impl Default for GitConfig {
 impl Default for Config {
     fn default() -> Self {
         Self {
+            env_file: default_env_file(),
             memory: MemoryConfig::default(),
             repos: RepoConfig::default(),
             deploy: HashMap::new(),
@@ -164,6 +173,34 @@ impl Config {
     /// Returns the memory path with ~ expanded to the user's home directory.
     pub fn memory_path(&self) -> PathBuf {
         expand_tilde(&self.memory.path)
+    }
+
+    /// Load environment variables from the configured .env file.
+    /// Silently skips if file doesn't exist. Does NOT override existing env vars.
+    pub fn load_env(&self) {
+        let path = expand_tilde(&self.env_file);
+        if !path.exists() {
+            return;
+        }
+        let contents = match std::fs::read_to_string(&path) {
+            Ok(c) => c,
+            Err(_) => return,
+        };
+        for line in contents.lines() {
+            let line = line.trim();
+            // Skip comments and empty lines
+            if line.is_empty() || line.starts_with('#') {
+                continue;
+            }
+            if let Some((key, value)) = line.split_once('=') {
+                let key = key.trim();
+                let value = value.trim().trim_matches('"').trim_matches('\'');
+                // Don't override existing env vars
+                if std::env::var(key).is_err() {
+                    std::env::set_var(key, value);
+                }
+            }
+        }
     }
 
     /// Returns the Eruka service key.
