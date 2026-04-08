@@ -1,0 +1,12 @@
+{
+  "name": "dstack",
+  "version": "0.1.0",
+  "description": "Development stack for AI-assisted multi-repo work. Persistent memory, quality gates, VPS deployment, cross-repo sync.",
+  "author": "dirmacs",
+  "license": "MIT",
+  "homepage": "https://github.com/dirmacs/dstack",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dirmacs/dstack"
+  }
+}
