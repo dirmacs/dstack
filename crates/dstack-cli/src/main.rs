@@ -30,6 +30,9 @@ enum Commands {
         /// Deploy all configured services
         #[arg(long)]
         all: bool,
+        /// Rollback to previous binary
+        #[arg(long)]
+        rollback: bool,
     },
     /// Git sync across tracked repos
     Sync {
@@ -101,8 +104,13 @@ async fn main() -> anyhow::Result<()> {
                 cmd_memory::export(&cfg).await?;
             }
         },
-        Commands::Deploy { service, all } => {
-            if all {
+        Commands::Deploy { service, all, rollback } => {
+            if rollback {
+                if service.is_empty() {
+                    anyhow::bail!("Specify a service name for rollback");
+                }
+                cmd_deploy::rollback(&cfg, &service)?;
+            } else if all {
                 cmd_deploy::deploy_all(&cfg)?;
             } else if service.is_empty() {
                 anyhow::bail!("Specify a service name or use --all");
@@ -123,8 +131,7 @@ async fn main() -> anyhow::Result<()> {
             } else if stale {
                 cmd_audit::stale(&cfg)?;
             } else {
-                // Default: show quality gate
-                cmd_audit::pre_commit()?;
+                cmd_audit::summary(&cfg)?;
             }
         }
     }
