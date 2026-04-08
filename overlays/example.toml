@@ -1,0 +1,31 @@
+# Example private overlay for dstack
+# Copy this to ~/.config/dstack/config.toml and customize
+
+[memory]
+backend = "file"
+# backend = "eruka"
+
+# Eruka backend config (only needed if backend = "eruka")
+# [memory.eruka]
+# url = "https://eruka.example.com"
+# Set $DSTACK_ERUKA_KEY for the service key
+
+[repos]
+tracked = [
+  "/opt/my-project",
+  "/opt/my-library",
+]
+
+# Deploy targets
+[deploy.my-api]
+build = "cd /opt/my-project && cargo build --release"
+service = "my-api"
+smoke = "curl -sf http://localhost:3000/health"
+
+# [deploy.my-frontend]
+# build = "cd /opt/my-frontend && npm run build"
+# service = "my-frontend"
+
+[git]
+author_name = "your-name"
+author_email = "you@example.com"

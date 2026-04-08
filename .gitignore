@@ -1,2 +1,4 @@
 /target
 site/output/
+*.env
+overlays/private.toml
