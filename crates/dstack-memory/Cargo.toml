@@ -2,6 +2,11 @@
 name = "dstack-memory"
 version.workspace = true
 edition.workspace = true
+description = "Pluggable memory layer for AI development stacks — FileProvider + ErukaProvider"
+license.workspace = true
+repository.workspace = true
+keywords = ["memory", "ai", "context", "eruka", "persistence"]
+categories = ["development-tools"]
 
 [dependencies]
 async-trait = "0.1"

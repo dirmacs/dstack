@@ -2,6 +2,15 @@
 name = "dstack-cli"
 version.workspace = true
 edition.workspace = true
+description = "Development stack for AI-assisted multi-repo work — CLI binary"
+license.workspace = true
+repository.workspace = true
+keywords = ["cli", "developer-tools", "ai", "memory", "deployment"]
+categories = ["command-line-utilities", "development-tools"]
+
+[lib]
+name = "dstack"
+path = "src/lib.rs"
 
 [[bin]]
 name = "dstack"
