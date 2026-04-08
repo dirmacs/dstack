@@ -2,3 +2,4 @@
 site/output/
 *.env
 overlays/private.toml
+site/public/

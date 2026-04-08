@@ -1,0 +1,13 @@
+base_url = "https://dirmacs.github.io/dstack"
+title = "dstack"
+description = "Development stack for AI-assisted multi-repo work"
+compile_sass = true
+build_search_index = false
+generate_feeds = false
+minify_html = true
+
+[markdown]
+highlight_code = true
+highlight_theme = "base16-ocean-dark"
+
+[extra]
