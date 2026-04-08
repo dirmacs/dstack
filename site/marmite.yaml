@@ -1,3 +1,14 @@
 name: dstack
 tagline: "Development stack for AI-assisted multi-repo work"
 url: https://dirmacs.github.io/dstack
+pagination: 10
+
+menu:
+  - ["GitHub", "https://github.com/dirmacs/dstack"]
+  - ["crates.io", "https://crates.io/crates/dstack-cli"]
+  - ["DIRMACS", "https://dirmacs.com"]
+
+extra:
+  colorscheme: github
+  colormode: dark
+  colormodetoggle: false
