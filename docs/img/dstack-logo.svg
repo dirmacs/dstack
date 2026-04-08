@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="stackGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#58a6ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1f6feb;stop-opacity:0.8" />
+    </linearGradient>
+    <linearGradient id="memGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3fb950;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#238636;stop-opacity:0.8" />
+    </linearGradient>
+    <linearGradient id="gateGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f97316;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ea580c;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="64" fill="url(#bgGrad)" />
+
+  <!-- Stack layers (the "d" in dstack = development stack) -->
+  <!-- Layer 1: Memory (bottom) -->
+  <rect x="126" y="260" width="260" height="36" rx="6" fill="url(#memGrad)" fill-opacity="0.85" />
+  <text x="256" y="284" text-anchor="middle" font-family="system-ui, sans-serif"
+        font-size="13" font-weight="700" fill="#0d1117" letter-spacing="3">MEMORY</text>
+
+  <!-- Layer 2: CLI (middle) -->
+  <rect x="126" y="214" width="260" height="36" rx="6" fill="url(#stackGrad)" fill-opacity="0.85" />
+  <text x="256" y="238" text-anchor="middle" font-family="system-ui, sans-serif"
+        font-size="13" font-weight="700" fill="#0d1117" letter-spacing="3">CLI</text>
+
+  <!-- Layer 3: Skills (top) -->
+  <rect x="126" y="168" width="260" height="36" rx="6" fill="url(#gateGrad)" fill-opacity="0.85" />
+  <text x="256" y="192" text-anchor="middle" font-family="system-ui, sans-serif"
+        font-size="13" font-weight="700" fill="#0d1117" letter-spacing="3">SKILLS</text>
+
+  <!-- Shield outline (quality gate metaphor) -->
+  <path d="M256 95 L330 130 L330 210 Q330 280 256 310 Q182 280 182 210 L182 130 Z"
+        fill="none" stroke="#58a6ff" stroke-width="2" stroke-opacity="0.25" />
+
+  <!-- Connection lines (repos syncing) -->
+  <g stroke="#8b949e" stroke-width="1.5" stroke-dasharray="4 3" stroke-opacity="0.4">
+    <line x1="140" y1="310" x2="140" y2="340" />
+    <line x1="200" y1="310" x2="200" y2="350" />
+    <line x1="256" y1="310" x2="256" y2="340" />
+    <line x1="312" y1="310" x2="312" y2="350" />
+    <line x1="372" y1="310" x2="372" y2="340" />
+  </g>
+
+  <!-- Repo dots (multi-repo tracking) -->
+  <circle cx="140" cy="348" r="5" fill="#58a6ff" fill-opacity="0.7" />
+  <circle cx="200" cy="358" r="5" fill="#3fb950" fill-opacity="0.7" />
+  <circle cx="256" cy="348" r="5" fill="#58a6ff" fill-opacity="0.7" />
+  <circle cx="312" cy="358" r="5" fill="#3fb950" fill-opacity="0.7" />
+  <circle cx="372" cy="348" r="5" fill="#58a6ff" fill-opacity="0.7" />
+
+  <!-- Checkmark (quality gate passed) -->
+  <polyline points="240,125 253,140 280,110" fill="none" stroke="#3fb950"
+            stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- DSTACK -->
+  <text x="256" y="408" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif"
+        font-size="42" font-weight="800" fill="#c9d1d9" letter-spacing="10">DSTACK</text>
+
+  <!-- Subtitle -->
+  <text x="256" y="440" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif"
+        font-size="11" font-weight="500" fill="#8b949e" letter-spacing="5">DEVELOPMENT STACK</text>
+</svg>
