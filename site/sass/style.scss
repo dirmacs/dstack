@@ -88,14 +88,13 @@ main {
     display: inline-block;
     background: rgba($primary, 0.15);
     color: $primary;
-    font-size: 0.5em;
+    font-size: 0.75rem;
     font-weight: 700;
-    padding: 0.15rem 0.5rem;
+    padding: 0.25rem 0.75rem;
     border-radius: 999px;
     border: 1px solid rgba($primary, 0.3);
     letter-spacing: 0.5px;
-    vertical-align: super;
-    margin-left: 0.25rem;
+    margin: 0.5rem 0 0.75rem;
   }
   h1 {
     font-size: 3.5rem;
