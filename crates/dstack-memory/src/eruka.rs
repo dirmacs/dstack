@@ -26,6 +26,23 @@ struct ErukaField {
     updated_at: Option<String>,
 }
 
+#[derive(Debug, Deserialize)]
+struct ErukaSearchResponse {
+    #[serde(default)]
+    results: Vec<ErukaSearchResult>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ErukaSearchResult {
+    path: String,
+    #[serde(default)]
+    content: Option<String>,
+    #[serde(default)]
+    confidence: Option<f64>,
+    #[serde(default)]
+    score: Option<f64>,
+}
+
 impl ErukaProvider {
     pub fn new(base_url: impl Into<String>, service_key: impl Into<String>) -> Self {
         Self {
@@ -35,6 +52,23 @@ impl ErukaProvider {
                 .timeout(std::time::Duration::from_secs(5))
                 .build()
                 .unwrap_or_default(),
+        }
+    }
+
+    fn map_search_result(sr: &ErukaSearchResult) -> Field {
+        // Content comes JSON-quoted from Eruka, strip outer quotes
+        let value = sr
+            .content
+            .as_deref()
+            .unwrap_or("")
+            .trim_matches('"')
+            .to_string();
+        Field {
+            path: sr.path.clone(),
+            value,
+            confidence: sr.confidence.or(sr.score).unwrap_or(0.5),
+            source: "eruka".into(),
+            updated_at: chrono::Utc::now(),
         }
     }
 
@@ -104,35 +138,24 @@ impl MemoryProvider for ErukaProvider {
     }
 
     async fn search(&self, query: &str) -> Result<Vec<Field>> {
-        // Try search endpoint first, fall back to load-and-filter
-        let url = format!("{}/api/v1/context/search?q={}", self.base_url, query);
+        let url = format!("{}/api/v1/context/search", self.base_url);
         let resp = self
             .client
-            .get(&url)
+            .post(&url)
             .header("X-Service-Key", &self.service_key)
+            .json(&serde_json::json!({ "query": query }))
             .send()
-            .await;
-        match resp {
-            Ok(r) if r.status().is_success() => {
-                let body: ErukaContextResponse = r
-                    .json()
-                    .await
-                    .map_err(|e| MemoryError::Http(e.to_string()))?;
-                Ok(body.fields.iter().map(Self::map_field).collect())
-            }
-            _ => {
-                // Fallback: load all and filter client-side
-                let all = self.load("").await.unwrap_or_default();
-                let q = query.to_lowercase();
-                Ok(all
-                    .into_iter()
-                    .filter(|f| {
-                        f.value.to_lowercase().contains(&q)
-                            || f.path.to_lowercase().contains(&q)
-                    })
-                    .collect())
-            }
+            .await
+            .map_err(|e| MemoryError::Http(e.to_string()))?;
+        if !resp.status().is_success() {
+            let body = resp.text().await.unwrap_or_default();
+            return Err(MemoryError::Http(format!("Search failed: {}", body)));
         }
+        let body: ErukaSearchResponse = resp
+            .json()
+            .await
+            .map_err(|e| MemoryError::Http(e.to_string()))?;
+        Ok(body.results.iter().map(Self::map_search_result).collect())
     }
 
     async fn delete(&self, path: &str) -> Result<()> {
