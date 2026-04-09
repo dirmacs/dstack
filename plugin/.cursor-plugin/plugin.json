@@ -1,25 +1,24 @@
 {
   "name": "dstack",
-  "version": "0.2.0",
+  "displayName": "dstack",
   "description": "Development stack for AI-assisted multi-repo work. Persistent memory, quality gates, VPS deployment, cross-repo sync.",
+  "version": "0.2.0",
   "author": {
     "name": "DIRMACS",
     "email": "contact@dirmacs.com"
   },
-  "license": "MIT",
   "homepage": "https://github.com/dirmacs/dstack",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/dirmacs/dstack"
-  },
+  "repository": "https://github.com/dirmacs/dstack",
+  "license": "MIT",
   "keywords": [
     "memory",
     "multi-repo",
     "deployment",
     "quality-gates",
     "devops",
-    "eruka",
-    "claude-code-plugin",
-    "cursor-plugin"
-  ]
+    "eruka"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/",
+  "hooks": "./hooks/hooks-cursor.json"
 }
