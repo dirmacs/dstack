@@ -48,12 +48,12 @@ Deploy targets are defined in `~/.config/dstack/config.toml`:
 
 ```toml
 [deploy.my-api]
-build = "cd /opt/my-api && cargo build --release"
+build = "cd ~/projects/my-api && cargo build --release"
 service = "my-api"
 smoke = "curl -sf http://localhost:3000/health"
 
 [deploy.my-worker]
-build = "cd /opt/my-worker && cargo build --release"
+build = "cd ~/projects/my-worker && cargo build --release"
 service = "my-worker"
 smoke = "curl -sf http://localhost:8081/health"
 ```
@@ -64,5 +64,5 @@ Before building, check available disk space. Rust release builds consume signifi
 
 ```bash
 df -h /opt
-du -sh /opt/*/target 2>/dev/null
+du -sh ~/projects/*/target 2>/dev/null
 ```

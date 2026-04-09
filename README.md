@@ -46,7 +46,7 @@ backend = "file"  # "file" (default) or "eruka"
 tracked = ["ares", "pawan", "my-frontend"]
 
 [deploy.ares]
-build = "cd /opt/ares && cargo build --release"
+build = "cd ~/projects/ares && cargo build --release"
 service = "ares"
 smoke = "curl -sf http://localhost:3000/health"
 

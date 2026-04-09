@@ -12,18 +12,18 @@ backend = "file"
 
 [repos]
 tracked = [
-  "/opt/my-project",
-  "/opt/my-library",
+  "~/projects/my-project",
+  "~/projects/my-library",
 ]
 
 # Deploy targets
 [deploy.my-api]
-build = "cd /opt/my-project && cargo build --release"
+build = "cd ~/projects/my-project && cargo build --release"
 service = "my-api"
 smoke = "curl -sf http://localhost:3000/health"
 
 # [deploy.my-frontend]
-# build = "cd /opt/my-frontend && npm run build"
+# build = "cd ~/projects/my-frontend && npm run build"
 # service = "my-frontend"
 
 [git]

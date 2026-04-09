@@ -17,7 +17,7 @@ pub struct Config {
     pub deploy: HashMap<String, DeployTarget>,
     #[serde(default)]
     pub git: GitConfig,
-    /// Path to local skills repo (e.g. /opt/dirmacs-skills)
+    /// Path to local skills repo (e.g. ~/projects/skills)
     #[serde(default)]
     pub skills_repo: Option<String>,
 }

@@ -13,7 +13,7 @@ cargo install dstack-cli
 Or build from source:
 
 ```bash
-cd /opt/dstack && cargo build --release
+cd ~/projects/dstack && cargo build --release
 cp target/release/dstack /usr/local/bin/
 ```
 
@@ -26,10 +26,10 @@ Create `~/.config/dstack/config.toml`:
 backend = "file"  # or "eruka"
 
 [repos]
-tracked = ["/opt/my-repo"]
+tracked = ["~/projects/my-repo"]
 
 [deploy.my-service]
-build = "cd /opt/my-repo && cargo build --release"
+build = "cd ~/projects/my-repo && cargo build --release"
 service = "my-service"
 smoke = "curl -sf http://localhost:3000/health"
 ```
