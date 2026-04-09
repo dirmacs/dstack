@@ -61,12 +61,22 @@ pub struct RepoConfig {
 /// Deployment target for a service.
 #[derive(Debug, Deserialize)]
 pub struct DeployTarget {
-    /// Build command (e.g., "cargo build --release")
+    /// Deploy type: "systemd" (default) or "docker-compose"
+    #[serde(default = "default_deploy_type")]
+    pub deploy_type: String,
+    /// Build command (e.g., "cargo build --release"). Optional for docker-compose.
+    #[serde(default)]
     pub build: String,
-    /// Systemd service name (e.g., "ares")
+    /// Systemd service name (e.g., "ares") or docker-compose service name
     pub service: String,
+    /// Path to docker-compose.yml (only for docker-compose type)
+    pub compose_file: Option<String>,
     /// Optional smoke test command
     pub smoke: Option<String>,
+}
+
+fn default_deploy_type() -> String {
+    "systemd".to_string()
 }
 
 /// Git authorship configuration.

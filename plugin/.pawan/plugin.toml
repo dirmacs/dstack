@@ -1,0 +1,21 @@
+# dstack plugin configuration for Pawan coding agent
+# Pawan discovers plugins via ~/.config/pawan/plugins/ or project-level .pawan/
+
+[plugin]
+name = "dstack"
+version = "0.2.0"
+description = "Development stack — persistent memory, quality gates, VPS deployment, cross-repo sync"
+author = "DIRMACS"
+license = "MIT"
+homepage = "https://github.com/dirmacs/dstack"
+
+[skills]
+path = "../skills"
+
+[commands]
+path = "../commands"
+
+[hooks]
+session_start = "../hooks/session-start"
+pre_tool = ["../hooks/quality-gate", "../hooks/proprietary-guard"]
+post_tool = ["../hooks/context-monitor"]

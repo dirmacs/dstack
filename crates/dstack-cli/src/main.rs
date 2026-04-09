@@ -1,5 +1,6 @@
 mod cmd_audit;
 mod cmd_deploy;
+mod cmd_init;
 mod cmd_memory;
 mod cmd_skills;
 mod cmd_sync;
@@ -57,6 +58,24 @@ enum Commands {
         /// Scan for stale companion docs
         #[arg(long)]
         stale: bool,
+    },
+    /// Initialize a new plugin with all platform configs (Claude Code, Cursor, Pawan, Codex, OpenCode, Gemini)
+    Init {
+        /// Output directory (default: ./plugin)
+        #[arg(default_value = "./plugin")]
+        dir: String,
+        /// Plugin name
+        #[arg(short, long, default_value = "my-plugin")]
+        name: String,
+        /// Plugin description
+        #[arg(short, long, default_value = "AI-assisted development plugin")]
+        description: String,
+        /// Author name
+        #[arg(short, long, default_value = "author")]
+        author: String,
+        /// Show what would be generated without writing
+        #[arg(long)]
+        dry_run: bool,
     },
 }
 
@@ -169,6 +188,13 @@ async fn main() -> anyhow::Result<()> {
                 cmd_audit::stale(&cfg)?;
             } else {
                 cmd_audit::summary(&cfg)?;
+            }
+        }
+        Commands::Init { dir, name, description, author, dry_run } => {
+            if dry_run {
+                cmd_init::init_dry_run(&dir, &name);
+            } else {
+                cmd_init::init_plugin(&dir, &name, &description, &author)?;
             }
         }
     }
