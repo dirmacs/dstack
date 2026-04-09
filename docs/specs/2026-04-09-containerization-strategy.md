@@ -8,7 +8,7 @@ Everything runs as systemd services with static Rust binaries. No containers unt
 |---------|------|--------|-------|
 | ARES | 3000 | ares-dirmacs | systemd, static binary |
 | Eruka | 8081 | eruka-api | systemd, static binary |
-| eHB | 8090 | ehb-server | systemd, static binary |
+| eHB | 8091 | ehb-server | systemd, static binary |
 | DolTARES | 3100 | doltares | systemd, static binary |
 | Caddy | 80/443 | caddy | systemd, package |
 | PostgreSQL | 5432 | postgres | systemd, package |
@@ -41,20 +41,20 @@ Everything runs as systemd services with static Rust binaries. No containers unt
 | 3500 | dstack-server | Internal (new) |
 | 5432 | PostgreSQL | Internal |
 | 8081 | Eruka | Internal, Caddy proxies |
-| 8090 | eHB | Internal, Caddy proxies |
+| 8090 | ix memory-layer | Container, native port |
+| 8091 | eHB | Internal, Caddy proxies (moved from 8090) |
 | 8529 | ArangoDB (ix) | Container, internal |
-| 8095 | ix memory-layer | Container, remapped from 8090 |
 | 9000 | channel-gateway | Internal |
 
 ## ix Resolution
 
-ix memory-layer runs inside Docker on port 8090 internally, mapped to host port **8095** to avoid conflict with eHB. The ix CLI health check hardcodes 8090 — we set `IX_MEMORY_URL=http://localhost:8095` in `~/.bashrc` and `~/.config/dstack/.env`.
+eHB was moved from port 8090 to **8091** so ix memory-layer keeps its native port 8090. Docker maps 8090:8090 (no remap needed). eHB's `.env` has `EHB_PORT=8091` and Caddy config updated to proxy to 8091.
 
 ## docker-compose.yml (for third-party services)
 
 Location: `~/.ix/backend/docker-compose.yml`
 
-Modified to map port 8095:8090 instead of 8090:8090.
+Standard port mapping: 127.0.0.1:8090:8090 (memory-layer), 127.0.0.1:8529:8529 (ArangoDB).
 
 ## What This Means for aegis
 

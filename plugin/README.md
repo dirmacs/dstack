@@ -6,7 +6,24 @@ Built by [DIRMACS](https://dirmacs.com). Born from production pain across 15+ re
 
 ## Installation
 
-Installation differs by platform. Claude Code and Cursor have built-in plugin systems. Codex and OpenCode require manual setup.
+Installation differs by platform. Claude Code, Cursor, and Pawan have built-in plugin systems. Codex and OpenCode require manual setup.
+
+### Pawan (DIRMACS)
+
+```bash
+# Symlink into Pawan's plugin directory
+mkdir -p ~/.config/pawan/plugins
+ln -s /path/to/dstack/plugin ~/.config/pawan/plugins/dstack
+```
+
+Or clone directly:
+
+```bash
+git clone https://github.com/dirmacs/dstack.git ~/.config/pawan/plugins/dstack-repo
+ln -s ~/.config/pawan/plugins/dstack-repo/plugin ~/.config/pawan/plugins/dstack
+```
+
+Detailed docs: [.pawan/INSTALL.md](.pawan/INSTALL.md)
 
 ### Claude Code (Official Marketplace)
 

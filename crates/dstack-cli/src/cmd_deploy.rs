@@ -13,11 +13,54 @@ pub fn deploy(cfg: &Config, service: &str) -> anyhow::Result<()> {
             )
         })?;
 
+    match target.deploy_type.as_str() {
+        "docker-compose" => deploy_docker_compose(service, target),
+        _ => deploy_systemd(cfg, service, target),
+    }
+}
+
+fn deploy_docker_compose(service: &str, target: &crate::config::DeployTarget) -> anyhow::Result<()> {
+    let compose_file = target.compose_file.as_deref()
+        .ok_or_else(|| anyhow::anyhow!("docker-compose deploy requires compose_file path"))?;
+
+    eprintln!("=== Deploying {} (docker-compose) ===", service);
+
+    // 1. Pull latest images
+    eprintln!("[1/3] Pulling images...");
+    run_cmd(
+        &format!("docker compose -f {} pull {}", compose_file, target.service),
+        "Docker pull",
+    )?;
+
+    // 2. Recreate containers
+    eprintln!("[2/3] Restarting containers...");
+    run_cmd(
+        &format!("docker compose -f {} up -d {}", compose_file, target.service),
+        "Docker up",
+    )?;
+
+    // 3. Smoke test
+    if let Some(ref smoke) = target.smoke {
+        eprintln!("[3/3] Smoke test...");
+        std::thread::sleep(std::time::Duration::from_secs(5));
+        match run_cmd(smoke, "Smoke test") {
+            Ok(_) => eprintln!("  Smoke test passed."),
+            Err(e) => eprintln!("  WARNING: Smoke test failed: {}", e),
+        }
+    } else {
+        eprintln!("[3/3] No smoke test configured, skipping.");
+    }
+
+    eprintln!("=== {} deployed (docker-compose) ===", service);
+    Ok(())
+}
+
+fn deploy_systemd(cfg: &Config, service: &str, target: &crate::config::DeployTarget) -> anyhow::Result<()> {
     eprintln!("=== Deploying {} ===", service);
 
     // 0. Disk check
     eprintln!("[0/4] Checking disk space...");
-    let df = cmd_output("df -h /opt | tail -1")?;
+    let df = cmd_output("df -h / | tail -1")?;
     let use_pct = parse_disk_usage(&df);
     if use_pct >= 90 {
         anyhow::bail!(
@@ -44,8 +87,12 @@ pub fn deploy(cfg: &Config, service: &str) -> anyhow::Result<()> {
     }
 
     // 2. Build
-    eprintln!("[2/4] Building...");
-    run_cmd(&target.build, "Build")?;
+    if !target.build.is_empty() {
+        eprintln!("[2/4] Building...");
+        run_cmd(&target.build, "Build")?;
+    } else {
+        eprintln!("[2/4] No build command, skipping.");
+    }
 
     // 3. Restart service
     eprintln!("[3/4] Restarting {}...", target.service);
