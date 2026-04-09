@@ -1,6 +1,6 @@
 {
   "name": "dstack",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Development stack for AI-assisted multi-repo work. Persistent memory, quality gates, VPS deployment, cross-repo sync.",
   "author": {
     "name": "DIRMACS",
