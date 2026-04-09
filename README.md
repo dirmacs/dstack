@@ -72,14 +72,19 @@ dstack deploy ares --rollback        # rollback to previous binary
 dstack audit                         # workspace summary dashboard
 dstack audit --pre-commit            # quality gate checklist
 dstack audit --stale                 # find stale companion docs
+dstack init my-plugin                # scaffold a new dstack plugin (6 platforms)
+dstack init --dry-run my-plugin      # preview files without writing
+dstack skills list                   # list installed skills
+dstack skills sync                   # sync skills from configured repo
 ```
 
-## Workspace (2 crates)
+## Workspace (3 crates)
 
 | Crate | What |
 |-------|------|
+| **dstack-cli** | CLI binary + library: memory, deploy, sync, audit, init, skills |
 | **dstack-memory** | MemoryProvider trait, FileProvider (JSON), ErukaProvider (REST API) |
-| **dstack-cli** | CLI binary + library: memory, deploy, sync, audit commands |
+| **dstack-server** | HTTP API + MCP server mirroring CLI commands |
 
 ## Claude Code Plugin
 
