@@ -1,0 +1,25 @@
+[package]
+name = "dstack-server"
+version.workspace = true
+edition.workspace = true
+description = "HTTP API + MCP server for dstack"
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "dstack-serve"
+path = "src/main.rs"
+
+[dependencies]
+dstack-memory = { version = "0.2.0", path = "../dstack-memory", features = ["file", "eruka"] }
+dstack = { package = "dstack-cli", path = "../dstack-cli" }
+clap = { version = "4", features = ["derive"] }
+axum = { version = "0.8", features = ["macros"] }
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+dirs = "6"
