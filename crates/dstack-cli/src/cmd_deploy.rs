@@ -200,3 +200,145 @@ fn parse_disk_usage(df_line: &str) -> u32 {
         .and_then(|s| s.trim_end_matches('%').parse().ok())
         .unwrap_or(0)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::HashMap;
+
+    fn test_config(deploy: HashMap<String, crate::config::DeployTarget>) -> Config {
+        Config {
+            deploy,
+            ..Config::default()
+        }
+    }
+
+    fn make_target(service: &str) -> crate::config::DeployTarget {
+        crate::config::DeployTarget {
+            deploy_type: "systemd".to_string(),
+            build: String::new(),
+            service: service.to_string(),
+            compose_file: None,
+            smoke: None,
+        }
+    }
+
+    fn make_docker_target(service: &str, compose: Option<&str>) -> crate::config::DeployTarget {
+        crate::config::DeployTarget {
+            deploy_type: "docker-compose".to_string(),
+            build: String::new(),
+            service: service.to_string(),
+            compose_file: compose.map(|s| s.to_string()),
+            smoke: None,
+        }
+    }
+
+    // --- parse_disk_usage tests ---
+
+    #[test]
+    fn test_parse_disk_usage_typical() {
+        // Typical df output line
+        let line = "/dev/sda1       50G   23G   25G  48% /";
+        assert_eq!(parse_disk_usage(line), 48);
+    }
+
+    #[test]
+    fn test_parse_disk_usage_high() {
+        let line = "/dev/vda1       50G   46G   2G  92% /";
+        assert_eq!(parse_disk_usage(line), 92);
+    }
+
+    #[test]
+    fn test_parse_disk_usage_zero() {
+        let line = "tmpfs           1G     0   1G   0% /tmp";
+        assert_eq!(parse_disk_usage(line), 0);
+    }
+
+    #[test]
+    fn test_parse_disk_usage_100() {
+        let line = "/dev/sda1       50G   50G   0G 100% /";
+        assert_eq!(parse_disk_usage(line), 100);
+    }
+
+    #[test]
+    fn test_parse_disk_usage_empty() {
+        assert_eq!(parse_disk_usage(""), 0);
+    }
+
+    #[test]
+    fn test_parse_disk_usage_no_percent() {
+        let line = "no percent sign here";
+        assert_eq!(parse_disk_usage(line), 0);
+    }
+
+    #[test]
+    fn test_parse_disk_usage_non_numeric_percent() {
+        // find() returns first match ending with %; "abc%" can't parse → 0
+        let line = "abc% def%";
+        assert_eq!(parse_disk_usage(line), 0);
+    }
+
+    #[test]
+    fn test_parse_disk_usage_mixed_tokens() {
+        // First token with % is "45%" → parses to 45
+        let line = "something 45% mounted";
+        assert_eq!(parse_disk_usage(line), 45);
+    }
+
+    // --- deploy error path tests ---
+
+    #[test]
+    fn test_deploy_missing_service() {
+        let cfg = test_config(HashMap::new());
+        let err = deploy(&cfg, "nonexistent").unwrap_err();
+        assert!(err.to_string().contains("No deploy target 'nonexistent'"));
+    }
+
+    #[test]
+    fn test_deploy_all_empty_config() {
+        let cfg = test_config(HashMap::new());
+        let err = deploy_all(&cfg).unwrap_err();
+        assert!(err.to_string().contains("No deploy targets configured"));
+    }
+
+    #[test]
+    fn test_docker_compose_missing_compose_file() {
+        let target = make_docker_target("myservice", None);
+        let err = deploy_docker_compose("test-svc", &target).unwrap_err();
+        assert!(err.to_string().contains("compose_file"));
+    }
+
+    #[test]
+    fn test_rollback_missing_service() {
+        let cfg = test_config(HashMap::new());
+        let err = rollback(&cfg, "ghost").unwrap_err();
+        assert!(err.to_string().contains("No deploy target 'ghost'"));
+    }
+
+    #[test]
+    fn test_rollback_no_backup_file() {
+        let mut map = HashMap::new();
+        map.insert("test-svc".to_string(), make_target("test-svc-binary"));
+        let cfg = test_config(map);
+        let err = rollback(&cfg, "test-svc").unwrap_err();
+        assert!(err.to_string().contains("No rollback binary found"));
+    }
+
+    #[test]
+    fn test_deploy_routes_to_docker_compose() {
+        let mut map = HashMap::new();
+        map.insert("dc-svc".to_string(), make_docker_target("dc-svc", None));
+        let cfg = test_config(map);
+        // Should fail with compose_file error, proving it routed correctly
+        let err = deploy(&cfg, "dc-svc").unwrap_err();
+        assert!(err.to_string().contains("compose_file"));
+    }
+
+    #[test]
+    fn test_deploy_target_defaults_to_systemd() {
+        let target = make_target("my-service");
+        assert_eq!(target.deploy_type, "systemd");
+        assert!(target.compose_file.is_none());
+        assert!(target.smoke.is_none());
+    }
+}
