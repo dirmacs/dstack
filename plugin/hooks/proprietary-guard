@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# dstack proprietary content guard (PreToolUse on Bash)
+# Checks staged git content for proprietary/client names before commit
+# Mirrors the VPS-level dirmacs-oss-guard.sh pattern
+
+set -euo pipefail
+
+TOOL_INPUT="${1:-}"
+
+# Only fire on git commit commands
+if ! echo "$TOOL_INPUT" | grep -q "git commit"; then
+  exit 0
+fi
+
+# Check if we're in a git repo
+if ! git rev-parse --is-inside-work-tree &>/dev/null 2>&1; then
+  exit 0
+fi
+
+# Check if repo is public (has a remote with github.com)
+REMOTE_URL=$(git remote get-url origin 2>/dev/null || echo "")
+if [ -z "$REMOTE_URL" ]; then
+  exit 0
+fi
+
+# Proprietary patterns that should not appear in public repos
+BLOCKED_PATTERNS=(
+  "ehb-" "eHealthBuddy" "ehb_" "client-ehb"
+  "dinkedin" "kasino" "dotdot-" "dotdot_"
+  "doltares" "doltdot" "doltclaw" "channel-gateway"
+  "dirmacs2026"
+)
+
+# Check staged content
+STAGED=$(git diff --cached --name-only 2>/dev/null || echo "")
+if [ -z "$STAGED" ]; then
+  exit 0
+fi
+
+WARNINGS=""
+for pattern in "${BLOCKED_PATTERNS[@]}"; do
+  MATCHES=$(git diff --cached -U0 2>/dev/null | grep -i "^+" | grep -i "$pattern" | head -3)
+  if [ -n "$MATCHES" ]; then
+    WARNINGS="${WARNINGS}\n  Pattern '${pattern}' found in staged changes"
+  fi
+done
+
+if [ -n "$WARNINGS" ]; then
+  MSG="dstack proprietary guard: staged content may contain internal/client names.${WARNINGS}\nReview with: git diff --cached"
+
+  escape_for_json() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+  }
+
+  escaped=$(escape_for_json "$MSG")
+  printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "PreToolUse",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped"
+fi
+
+exit 0
