@@ -1,10 +1,20 @@
 {
   "name": "dstack",
-  "description": "Development stack for AI-assisted multi-repo work. Persistent memory (File + Eruka backends), cross-repo sync, VPS deployment with rollback, quality gates. Born from production pain across 15+ repos.",
+  "description": "Development stack for AI-assisted multi-repo work. Persistent memory, quality gates, VPS deployment, cross-repo sync.",
+  "version": "0.2.0",
   "author": {
     "name": "DIRMACS",
     "email": "contact@dirmacs.com"
   },
-  "version": "0.2.0",
-  "license": "MIT"
+  "homepage": "https://github.com/dirmacs/dstack",
+  "repository": "https://github.com/dirmacs/dstack",
+  "license": "MIT",
+  "keywords": [
+    "memory",
+    "multi-repo",
+    "deployment",
+    "quality-gates",
+    "devops",
+    "eruka"
+  ]
 }
