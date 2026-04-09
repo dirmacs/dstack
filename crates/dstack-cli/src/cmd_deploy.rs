@@ -32,8 +32,8 @@ pub fn deploy(cfg: &Config, service: &str) -> anyhow::Result<()> {
     let binary_name = &target.service;
     let backup_path = format!("/tmp/dstack-rollback-{}", binary_name);
     let binary_search = cmd_output(&format!(
-        "which {} 2>/dev/null || find /opt/{} -name {} -path '*/release/*' 2>/dev/null | head -1",
-        binary_name, service, binary_name
+        "which {} 2>/dev/null || find {}/{} -name {} -path '*/release/*' 2>/dev/null | head -1",
+        binary_name, cfg.repos.root, service, binary_name
     ))?;
     let binary_path = binary_search.trim().lines().next().unwrap_or("");
     if !binary_path.is_empty() && std::path::Path::new(binary_path).exists() {
@@ -91,8 +91,8 @@ pub fn rollback(cfg: &Config, service: &str) -> anyhow::Result<()> {
 
     // Find where the current binary lives
     let binary_search = cmd_output(&format!(
-        "find /opt/{} -name {} -path '*/release/*' 2>/dev/null | head -1",
-        service, target.service
+        "find {}/{} -name {} -path '*/release/*' 2>/dev/null | head -1",
+        cfg.repos.root, service, target.service
     ))?;
     let binary_path = binary_search.trim();
     if binary_path.is_empty() {
