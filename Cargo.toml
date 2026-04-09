@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/dstack-memory", "crates/dstack-cli"]
+members = ["crates/dstack-memory", "crates/dstack-cli", "crates/dstack-server"]
 
 [workspace.package]
 version = "0.2.0"
