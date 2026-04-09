@@ -3,7 +3,7 @@
 
 [plugin]
 name = "dstack"
-version = "0.2.0"
+version = "0.3.0"
 description = "Development stack — persistent memory, quality gates, VPS deployment, cross-repo sync"
 author = "DIRMACS"
 license = "MIT"
