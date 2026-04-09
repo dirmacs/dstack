@@ -18,5 +18,6 @@
 pub mod config;
 pub mod cmd_memory;
 pub mod cmd_deploy;
+pub mod cmd_skills;
 pub mod cmd_sync;
 pub mod cmd_audit;

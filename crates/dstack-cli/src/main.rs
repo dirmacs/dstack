@@ -1,6 +1,7 @@
 mod cmd_audit;
 mod cmd_deploy;
 mod cmd_memory;
+mod cmd_skills;
 mod cmd_sync;
 mod config;
 
@@ -43,6 +44,11 @@ enum Commands {
         #[arg(long)]
         dry_run: bool,
     },
+    /// Manage skills from dirmacs/skills repo
+    Skills {
+        #[command(subcommand)]
+        action: SkillsAction,
+    },
     /// Quality audit
     Audit {
         /// Run pre-commit quality gate
@@ -75,6 +81,21 @@ enum MemoryAction {
     },
     /// Export all memory as JSON
     Export,
+}
+
+#[derive(Subcommand)]
+enum SkillsAction {
+    /// List available skills from dirmacs/skills repo
+    List,
+    /// Install a skill to ~/.claude/skills/
+    Install {
+        /// Skill name (e.g. "eruka-query")
+        name: String,
+    },
+    /// Install all skills from the repo
+    Sync,
+    /// Pull latest and update installed skills
+    Update,
 }
 
 #[tokio::main]
@@ -120,6 +141,20 @@ async fn main() -> anyhow::Result<()> {
                 cmd_deploy::deploy(&cfg, &service)?;
             }
         }
+        Commands::Skills { action } => match action {
+            SkillsAction::List => {
+                cmd_skills::list(&cfg)?;
+            }
+            SkillsAction::Install { name } => {
+                cmd_skills::install(&cfg, &name)?;
+            }
+            SkillsAction::Sync => {
+                cmd_skills::sync_all(&cfg)?;
+            }
+            SkillsAction::Update => {
+                cmd_skills::update(&cfg)?;
+            }
+        },
         Commands::Sync { status, dry_run } => {
             if status {
                 cmd_sync::status(&cfg)?;

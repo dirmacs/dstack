@@ -17,6 +17,9 @@ pub struct Config {
     pub deploy: HashMap<String, DeployTarget>,
     #[serde(default)]
     pub git: GitConfig,
+    /// Path to local skills repo (e.g. /opt/dirmacs-skills)
+    #[serde(default)]
+    pub skills_repo: Option<String>,
 }
 
 /// Memory backend configuration.
@@ -142,6 +145,7 @@ impl Default for Config {
             repos: RepoConfig::default(),
             deploy: HashMap::new(),
             git: GitConfig::default(),
+            skills_repo: None,
         }
     }
 }
