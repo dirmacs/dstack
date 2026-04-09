@@ -428,3 +428,203 @@ Start by describing what you want to accomplish. The plugin will suggest relevan
     fs::write(dir.join("SKILL.md"), content)?;
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_platforms_count() {
+        assert_eq!(PLATFORMS.len(), 6);
+        assert!(PLATFORMS.contains(&"claude-code"));
+        assert!(PLATFORMS.contains(&"cursor"));
+        assert!(PLATFORMS.contains(&"pawan"));
+        assert!(PLATFORMS.contains(&"codex"));
+        assert!(PLATFORMS.contains(&"opencode"));
+        assert!(PLATFORMS.contains(&"gemini"));
+    }
+
+    #[test]
+    fn test_init_plugin_creates_all_files() {
+        let tmp = TempDir::new().unwrap();
+        let dir = tmp.path().join("my-plugin");
+        init_plugin(dir.to_str().unwrap(), "test-plugin", "A test plugin", "testauthor").unwrap();
+
+        // Core files
+        assert!(dir.join("package.json").exists());
+        assert!(dir.join("CLAUDE.md").exists());
+        assert!(dir.join("AGENTS.md").exists());
+        assert!(dir.join("CHANGELOG.md").exists());
+        assert!(dir.join("GEMINI.md").exists());
+
+        // Platform manifests
+        assert!(dir.join(".claude-plugin/plugin.json").exists());
+        assert!(dir.join(".cursor-plugin/plugin.json").exists());
+        assert!(dir.join(".pawan/plugin.toml").exists());
+        assert!(dir.join("gemini-extension.json").exists());
+
+        // Install docs
+        assert!(dir.join(".codex/INSTALL.md").exists());
+        assert!(dir.join(".opencode/INSTALL.md").exists());
+        assert!(dir.join(".pawan/INSTALL.md").exists());
+        assert!(dir.join(".opencode/plugins/test-plugin.js").exists());
+
+        // Hooks
+        assert!(dir.join("hooks/hooks.json").exists());
+        assert!(dir.join("hooks/hooks-cursor.json").exists());
+        assert!(dir.join("hooks/session-start").exists());
+
+        // Skeleton skill
+        assert!(dir.join("skills/using-test-plugin/SKILL.md").exists());
+    }
+
+    #[test]
+    fn test_package_json_content() {
+        let tmp = TempDir::new().unwrap();
+        let dir = tmp.path().join("pkg-test");
+        init_plugin(dir.to_str().unwrap(), "my-tool", "Does things", "alice").unwrap();
+
+        let content = fs::read_to_string(dir.join("package.json")).unwrap();
+        assert!(content.contains(r#""name": "my-tool""#));
+        assert!(content.contains(r#""description": "Does things""#));
+        assert!(content.contains(r#""author": "alice""#));
+        assert!(content.contains(r#""keywords": ["dstack-plugin"]"#));
+
+        // Verify it's valid JSON
+        let parsed: serde_json::Value = serde_json::from_str(&content).unwrap();
+        assert_eq!(parsed["name"], "my-tool");
+        assert_eq!(parsed["version"], "0.1.0");
+    }
+
+    #[test]
+    fn test_claude_plugin_json_valid() {
+        let tmp = TempDir::new().unwrap();
+        let dir = tmp.path().join("claude-test");
+        init_plugin(dir.to_str().unwrap(), "cp-test", "Claude plugin", "bob").unwrap();
+
+        let content = fs::read_to_string(dir.join(".claude-plugin/plugin.json")).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&content).unwrap();
+        assert_eq!(parsed["name"], "cp-test");
+        assert_eq!(parsed["description"], "Claude plugin");
+        assert_eq!(parsed["author"]["name"], "bob");
+    }
+
+    #[test]
+    fn test_cursor_plugin_json_valid() {
+        let tmp = TempDir::new().unwrap();
+        let dir = tmp.path().join("cursor-test");
+        init_plugin(dir.to_str().unwrap(), "cur-test", "Cursor plugin", "carol").unwrap();
+
+        let content = fs::read_to_string(dir.join(".cursor-plugin/plugin.json")).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&content).unwrap();
+        assert_eq!(parsed["name"], "cur-test");
+        assert_eq!(parsed["displayName"], "cur-test");
+        assert_eq!(parsed["hooks"], "./hooks/hooks-cursor.json");
+    }
+
+    #[test]
+    fn test_pawan_plugin_toml_valid() {
+        let tmp = TempDir::new().unwrap();
+        let dir = tmp.path().join("pawan-test");
+        init_plugin(dir.to_str().unwrap(), "pw-test", "Pawan plugin", "dave").unwrap();
+
+        let content = fs::read_to_string(dir.join(".pawan/plugin.toml")).unwrap();
+        assert!(content.contains(r#"name = "pw-test""#));
+        assert!(content.contains(r#"description = "Pawan plugin""#));
+        assert!(content.contains(r#"path = "../skills""#));
+    }
+
+    #[test]
+    fn test_gemini_extension_json_valid() {
+        let tmp = TempDir::new().unwrap();
+        let dir = tmp.path().join("gemini-test");
+        init_plugin(dir.to_str().unwrap(), "gem-test", "Gemini ext", "eve").unwrap();
+
+        let content = fs::read_to_string(dir.join("gemini-extension.json")).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&content).unwrap();
+        assert_eq!(parsed["name"], "gem-test");
+        assert_eq!(parsed["contextFileName"], "GEMINI.md");
+    }
+
+    #[test]
+    fn test_hooks_session_start_executable() {
+        let tmp = TempDir::new().unwrap();
+        let dir = tmp.path().join("hooks-test");
+        init_plugin(dir.to_str().unwrap(), "h-test", "Hooks test", "frank").unwrap();
+
+        let script = dir.join("hooks/session-start");
+        assert!(script.exists());
+        let content = fs::read_to_string(&script).unwrap();
+        assert!(content.starts_with("#!/bin/bash"));
+        assert!(content.contains("hookSpecificOutput"));
+
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let perms = fs::metadata(&script).unwrap().permissions();
+            assert!(perms.mode() & 0o111 != 0, "session-start should be executable");
+        }
+    }
+
+    #[test]
+    fn test_skeleton_skill_has_frontmatter() {
+        let tmp = TempDir::new().unwrap();
+        let dir = tmp.path().join("skill-test");
+        init_plugin(dir.to_str().unwrap(), "sk-test", "Skill test", "grace").unwrap();
+
+        let content = fs::read_to_string(dir.join("skills/using-sk-test/SKILL.md")).unwrap();
+        assert!(content.starts_with("---\n"));
+        assert!(content.contains("name: using-sk-test"));
+        assert!(content.contains("description: Session orientation"));
+        assert!(content.contains("# Using sk-test"));
+    }
+
+    #[test]
+    fn test_init_dry_run_creates_nothing() {
+        let tmp = TempDir::new().unwrap();
+        let dir = tmp.path().join("dry-run-test");
+        fs::create_dir_all(&dir).unwrap();
+
+        init_dry_run(dir.to_str().unwrap(), "dry-test");
+
+        // Directory should still be empty — dry run writes nothing
+        let entries: Vec<_> = fs::read_dir(&dir).unwrap().collect();
+        assert!(entries.is_empty(), "dry run should not create any files");
+    }
+
+    #[test]
+    fn test_opencode_shim_js_content() {
+        let tmp = TempDir::new().unwrap();
+        let dir = tmp.path().join("shim-test");
+        init_plugin(dir.to_str().unwrap(), "oc-test", "OC test", "hank").unwrap();
+
+        let content = fs::read_to_string(dir.join(".opencode/plugins/oc-test.js")).unwrap();
+        assert!(content.contains(r#"name: "oc-test""#));
+        assert!(content.contains("module.exports"));
+        assert!(content.contains("registerSkillsPath"));
+        assert!(content.contains("toolMapping"));
+    }
+
+    #[test]
+    fn test_name_with_special_chars() {
+        let tmp = TempDir::new().unwrap();
+        let dir = tmp.path().join("special-test");
+        // Names with hyphens and numbers should work fine
+        init_plugin(dir.to_str().unwrap(), "my-plugin-2", "Test v2", "user-1").unwrap();
+        assert!(dir.join("package.json").exists());
+        assert!(dir.join("skills/using-my-plugin-2/SKILL.md").exists());
+    }
+
+    #[test]
+    fn test_changelog_mentions_plugin_name() {
+        let tmp = TempDir::new().unwrap();
+        let dir = tmp.path().join("cl-test");
+        init_plugin(dir.to_str().unwrap(), "changelog-test", "CL", "author").unwrap();
+
+        let content = fs::read_to_string(dir.join("CHANGELOG.md")).unwrap();
+        assert!(content.contains("# Changelog"));
+        assert!(content.contains("changelog-test"));
+        assert!(content.contains("dstack init"));
+    }
+}
