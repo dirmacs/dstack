@@ -20,6 +20,11 @@
             "type": "command",
             "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/quality-gate\" \"$TOOL_INPUT\"",
             "async": false
+          },
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/proprietary-guard\" \"$TOOL_INPUT\"",
+            "async": false
           }
         ]
       }
