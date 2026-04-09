@@ -7,6 +7,7 @@ license.workspace = true
 repository.workspace = true
 keywords = ["memory", "ai", "context", "eruka", "persistence"]
 categories = ["development-tools"]
+readme = "README.md"
 
 [dependencies]
 async-trait = "0.1"
