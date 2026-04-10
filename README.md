@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://crates.io/crates/dstack-cli"><img src="https://img.shields.io/crates/v/dstack-cli.svg" alt="crates.io"></a>
+  <a href="https://crates.io/crates/dstack"><img src="https://img.shields.io/crates/v/dstack.svg" alt="crates.io"></a>
   <a href="https://github.com/dirmacs/dstack/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
   <a href="https://dirmacs.github.io/dstack"><img src="https://img.shields.io/badge/docs-dstack-58a6ff" alt="docs"></a>
   <img src="https://img.shields.io/badge/rust-stable-orange.svg" alt="Rust">
@@ -25,13 +25,13 @@ Built by [DIRMACS](https://dirmacs.com). Born from [real pain](STORY.md) — Cla
 ## Install
 
 ```bash
-cargo install dstack-cli
+cargo install dstack
 ```
 
 ```bash
 # Or from source
 git clone https://github.com/dirmacs/dstack && cd dstack
-cargo install --path crates/dstack-cli
+cargo install --path crates/dstack-cli  # or: cargo install dstack
 ```
 
 ## Configure
@@ -82,13 +82,13 @@ dstack skills sync                   # sync skills from configured repo
 
 | Crate | What |
 |-------|------|
-| **dstack-cli** | CLI binary + library: memory, deploy, sync, audit, init, skills |
+| **dstack** | CLI binary + library: memory, deploy, sync, audit, init, skills |
 | **dstack-memory** | MemoryProvider trait, FileProvider (JSON), ErukaProvider (REST API) |
 | **dstack-server** | HTTP API + MCP server mirroring CLI commands |
 
 ## Claude Code Plugin
 
-6 skills, 3 hooks, 3 commands. Works alongside [superpowers](https://github.com/obra/superpowers) and GSD — no conflicts.
+6 skills, 4 hooks, 3 commands. Works alongside [superpowers](https://github.com/obra/superpowers) and GSD — no conflicts.
 
 ```bash
 # Install as Claude Code plugin
@@ -112,6 +112,7 @@ claude plugin install /path/to/dstack/plugin
 |------|-------|------|
 | **session-start** | SessionStart | Loads project memory, shows repo status |
 | **quality-gate** | PreToolUse | Injects quality checklist on `git commit` |
+| **proprietary-guard** | PreToolUse | Blocks commits containing internal/client names in public repos |
 | **context-monitor** | PostToolUse | Warns at 50/100 tool calls to save findings |
 
 ### Commands
@@ -146,11 +147,12 @@ These exist because skipping them cost us a client meeting.
 dstack/
 ├── crates/
 │   ├── dstack-memory/     # MemoryProvider trait + backends (file, eruka)
-│   └── dstack-cli/        # CLI binary (clap) + library
+│   ├── dstack-cli/        # CLI binary (clap) + library
+│   └── dstack-server/     # HTTP API + MCP server mirroring CLI
 ├── plugin/
 │   ├── .claude-plugin/    # Plugin metadata
 │   ├── skills/            # 6 SKILL.md files
-│   ├── hooks/             # 3 hook scripts (Claude Code format)
+│   ├── hooks/             # 4 hook scripts (Claude Code format)
 │   ├── commands/          # 3 command definitions
 │   └── CLAUDE.md          # Bootstrap instructions
 ├── overlays/              # Private config examples
