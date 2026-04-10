@@ -11,8 +11,8 @@ name = "dstack-serve"
 path = "src/main.rs"
 
 [dependencies]
-dstack-memory = { version = "0.3.1", path = "../dstack-memory", features = ["file", "eruka"] }
-dstack = { version = "0.3.1", package = "dstack-cli", path = "../dstack-cli" }
+dstack-memory = { version = "0.3.2", path = "../dstack-memory", features = ["file", "eruka"] }
+dstack = { version = "0.3.2", path = "../dstack-cli" }
 clap = { version = "4", features = ["derive"] }
 axum = { version = "0.8", features = ["macros"] }
 tower-http = { version = "0.6", features = ["cors", "trace"] }
