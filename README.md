@@ -159,12 +159,36 @@ dstack/
 └── site/                  # Documentation (Zola)
 ```
 
+## Autonomous Iteration
+
+For long-running projects (multi-day integrations, test coverage pushes,
+documentation overhauls), combine dstack with the **[ralph-loop](https://github.com/dirmacs/skills/tree/main/ralph-loop)**
+pattern from `dirmacs/skills` — co-prime parallel cron loops with an
+anti-idle rule and fallback hierarchy that regenerates tasks from context
+when the queue empties.
+
+```bash
+# Capture a persistent thread before starting ralph loops
+dstack thread create "pawan-integration"
+
+# ... agent sets up 3 parallel loops (3m/7m/11m), walks away ...
+
+# Loops survive across sessions via dstack thread resume
+dstack thread resume "pawan-integration"
+```
+
+dstack's memory layer persists the loop's accumulated context across
+session restarts, making ralph loops survive longer than a single Claude
+session.
+
 ## Philosophy
 
 - **Humans verify, AI executes** — Quality gates enforce human checkpoints
 - **Memory is a team resource** — Context shouldn't die with a session
 - **Friction kills teams before bugs do** — Automate the boring parts
 - **Ship the unique value** — Don't rebuild what superpowers/GSD already do
+- **Loops beat ticks** — Autonomous iteration produces more value than
+  one-shot prompts for any project larger than a bug fix
 
 ## License
 
