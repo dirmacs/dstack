@@ -322,8 +322,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "dstack-cli"
-version = "0.3.1"
+name = "dstack"
+version = "0.3.2"
 dependencies = [
  "anyhow",
  "clap",
@@ -338,7 +338,7 @@ dependencies = [
 
 [[package]]
 name = "dstack-memory"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "async-trait",
  "chrono",
@@ -352,13 +352,13 @@ dependencies = [
 
 [[package]]
 name = "dstack-server"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "anyhow",
  "axum",
  "clap",
  "dirs",
- "dstack-cli",
+ "dstack",
  "dstack-memory",
  "serde",
  "serde_json",
