@@ -88,7 +88,7 @@ dstack skills sync                   # sync skills from configured repo
 
 ## Claude Code Plugin
 
-6 skills, 4 hooks, 3 commands. Works alongside [superpowers](https://github.com/obra/superpowers) and GSD — no conflicts.
+7 skills, 4 hooks, 3 commands. Works alongside [superpowers](https://github.com/obra/superpowers) and GSD — no conflicts.
 
 ```bash
 # Install as Claude Code plugin
@@ -105,6 +105,7 @@ claude plugin install /path/to/dstack/plugin
 | **vps-deploy** | Build + restart + smoke test workflow |
 | **companion-docs** | Track implementation reality vs plan intent |
 | **quality-gates** | Pre-commit 5-question checklist |
+| **[ralph-loop](plugin/skills/ralph-loop/SKILL.md)** | Autonomous iteration via co-prime parallel cron loops — never-idle agent for multi-day projects |
 
 ### Hooks
 
