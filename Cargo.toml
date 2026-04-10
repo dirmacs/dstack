@@ -3,7 +3,7 @@ resolver = "2"
 members = ["crates/dstack-memory", "crates/dstack-cli", "crates/dstack-server"]
 
 [workspace.package]
-version = "0.3.1"
+version = "0.3.2"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/dirmacs/dstack"

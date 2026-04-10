@@ -1,5 +1,5 @@
 [package]
-name = "dstack-cli"
+name = "dstack"
 version.workspace = true
 edition.workspace = true
 description = "Development stack for AI-assisted multi-repo work — CLI binary"
