@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "dstack",
+  "description": "DIRMACS development stack — memory, deploy, sync, audit for multi-repo AI-assisted work",
+  "owner": {
+    "name": "DIRMACS",
+    "email": "contact@dirmacs.com"
+  },
+  "plugins": [
+    {
+      "name": "dstack",
+      "description": "Development stack for AI-assisted multi-repo work. Persistent memory, quality gates, VPS deployment, cross-repo sync.",
+      "source": "./plugin",
+      "category": "productivity",
+      "homepage": "https://github.com/dirmacs/dstack"
+    }
+  ]
+}
