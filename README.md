@@ -18,7 +18,7 @@
 
 ---
 
-**dstack** is a Rust CLI + Claude Code plugin that encodes battle-tested workflows from production work across 15+ repos. It gives your AI coding agent persistent memory, awareness of your whole repo fleet, and quality gates that prevent shipping half-done work.
+**dstack** is a Rust CLI + Claude Code plugin that encodes production workflows from work across 15+ repos. It gives your AI coding agent persistent memory, awareness of your whole repo fleet, and quality gates that prevent shipping half-done work.
 
 Built by [DIRMACS](https://dirmacs.com). Born from [real pain](STORY.md) — Claude degradation incidents, a team communication breakdown, and a client meeting that almost didn't happen.
 
