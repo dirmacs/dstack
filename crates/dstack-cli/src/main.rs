@@ -1,6 +1,7 @@
 mod cmd_audit;
 mod cmd_deploy;
 mod cmd_init;
+mod cmd_loop;
 mod cmd_memory;
 mod cmd_skills;
 mod cmd_sync;
@@ -59,6 +60,11 @@ enum Commands {
         #[arg(long)]
         stale: bool,
     },
+    /// Manage long-running agent loops (ralph-style perpetual iteration)
+    Loop {
+        #[command(subcommand)]
+        action: LoopAction,
+    },
     /// Initialize a new plugin with all platform configs (Claude Code, Cursor, Pawan, Codex, OpenCode, Gemini)
     Init {
         /// Output directory (default: ./plugin)
@@ -100,6 +106,25 @@ enum MemoryAction {
     },
     /// Export all memory as JSON
     Export,
+}
+
+#[derive(Subcommand)]
+enum LoopAction {
+    /// Create a new long-running loop
+    Create {
+        /// Loop name (alphanumeric, '-', '_'; max 64 chars)
+        #[arg(short, long)]
+        name: String,
+        /// Cron expression (5 or 6 fields)
+        #[arg(short, long)]
+        cron: String,
+        /// Task prompt the loop will execute each tick
+        #[arg(short, long)]
+        task: String,
+        /// Print the request body without posting
+        #[arg(long)]
+        dry_run: bool,
+    },
 }
 
 #[derive(Subcommand)]
@@ -190,6 +215,11 @@ async fn main() -> anyhow::Result<()> {
                 cmd_audit::summary(&cfg)?;
             }
         }
+        Commands::Loop { action } => match action {
+            LoopAction::Create { name, cron, task, dry_run } => {
+                cmd_loop::create(&cfg, &name, &cron, &task, dry_run)?;
+            }
+        },
         Commands::Init { dir, name, description, author, dry_run } => {
             if dry_run {
                 cmd_init::init_dry_run(&dir, &name);
