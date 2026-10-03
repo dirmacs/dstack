@@ -201,7 +201,7 @@ Strays kept:     K  (had unique work)
 - Never create `main` on a repo with `canonical = "master"`.
 - Never delete a branch with unique commits without user approval.
 - Always fetch before computing divergence — stale local refs lie.
-- Always verify the commit author after any auto-commit: `git log -1 --format="%an <%ae>"` should be `bkataru <baalateja.k@gmail.com>`.
+- Always verify the commit author after any auto-commit: `git log -1 --format="%an <%ae>"` should be the identity configured on that checkout (`git config user.name` / `user.email`), not an ad-hoc one.
 - `origin/HEAD` shows up as literal `origin` in `git branch -r --format='%(refname:short)'` output — filter it out before stray detection.
 
 ## Dry-run output
@@ -234,7 +234,7 @@ placeholders here because this file is public and `AGENTS.md` asks that no
 - Runs standalone via `Bash`
 - Complements `vps-git-sync` (that one commits dirty files; this one handles branches)
 - Can be called from a `dstack audit` hook before release cuts
-- Installed to `/root/.claude/skills/dirmacs-branch-sync/` on the VPS for self-use
+- Installed under the agent skills directory on the VPS for self-use
 - Also ships in:
   - `github.com/dirmacs/skills` → `dirmacs-branch-sync/SKILL.md`
   - `github.com/dirmacs/dstack` → `plugin/skills/dirmacs-branch-sync/SKILL.md`
