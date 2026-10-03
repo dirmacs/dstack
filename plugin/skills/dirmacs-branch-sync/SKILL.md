@@ -213,17 +213,21 @@ Strays kept:     K  (had unique work)
 ```
 $ dirmacs-branch-sync --dry-run
 
-/opt/eruka       holy +3 / main 0    → would fast-forward main to holy (push)
-/opt/ares        holy 0 / main +3    → would fast-forward holy to main (push)
-/opt/ehb         holy +0 / main +0    in sync
-/opt/thulpoff    master canonical, holy absent    skip (OSS crate, not in allowlist)
-/opt/dirmacs-web holy exists, main MISSING   → would create main from holy (in allowlist)
-/opt/things-to-do   holy +1 / main +2 DIVERGED    manual merge needed (WARNING)
+<checkout-a>       holy +3 / main 0    → would fast-forward main to holy (push)
+<checkout-b>       holy 0 / main +3    → would fast-forward holy to main (push)
+<checkout-c>       holy +0 / main +0    in sync
+<checkout-d>       master canonical, holy absent    skip (OSS crate, not in allowlist)
+<checkout-e>       holy exists, main MISSING   → would create main from holy (in allowlist)
+<checkout-f>       holy +1 / main +2 DIVERGED    manual merge needed (WARNING)
 
 Strays:
-/opt/pawan       origin/sparrow-4    0 unique vs main, 0 unique vs holy   → would delete
-/opt/eruka       origin/feature-x    5 unique vs main, 2 unique vs holy   → KEEP (user review)
+<checkout-g>       origin/stale-branch    0 unique vs main, 0 unique vs holy   → would delete
+<checkout-a>       origin/wip-branch       5 unique vs main, 2 unique vs holy   → KEEP (user review)
 ```
+
+Real output names actual checkouts under the repo root. They are shown as
+placeholders here because this file is public and `AGENTS.md` asks that no
+`/opt/` paths appear in docs.
 
 ## Integration
 
