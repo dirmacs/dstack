@@ -1,0 +1,15 @@
+# Build context hygiene — keep the image build lean and reproducible.
+/target
+**/target
+.git
+*.env
+.env
+.env.*
+overlays/private.toml
+site/output/
+site/public/
+node_modules
+*.md
+Dockerfile
+.dockerignore
+docker-compose*.yml
